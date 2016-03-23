@@ -11,7 +11,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -37,6 +37,12 @@ gem 'grape-jbuilder'
 gem 'grape-swagger'
 gem 'grape-swagger-ui'
 gem 'haml-rails'
+gem 'redis'
+gem 'resque'
+gem 'resque-scheduler'
+gem 'rubocop', group: :development
+gem 'kakurenbo-puti'
+gem 'gon'
 
 group :development, :test do
   gem 'byebug'
@@ -44,7 +50,6 @@ group :development, :test do
   gem 'web-console', '~> 2.0'
 
   gem 'spring'
-  gem 'rubocop'
   gem 'rails-erd'
   gem 'pry-rails'
   gem 'pry-doc'
@@ -55,5 +60,9 @@ group :development, :test do
   gem 'awesome_print'
   gem 'quiet_assets'
   gem 'annotate'
-  gem 'rspec-rails', '~> 3.0.0.beta2'
+  gem 'json_expressions'
+  gem 'rspec-rails', '~> 3.0.0'
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'database_cleaner'
 end

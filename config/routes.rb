@@ -1,4 +1,9 @@
+require 'resque/server'
+
 Rails.application.routes.draw do
+  resources :temperatures, only: [:index]
+
+  mount Resque::Server.new, at: '/resque'
   mount API::Base => '/'
 
   # The priority is based upon order of creation: first created -> highest priority.

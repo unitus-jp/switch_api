@@ -14,11 +14,10 @@ module API
               code: ErrorCodes::FAIL_SAVE
             }
           end
-          error!(json: {
+          error!(meta: {
+                   status: 400,
                    errors: errors
-                 }, status: 400
-                )
-          false
+                 }, response: {})
         end
       end
 
@@ -26,24 +25,41 @@ module API
         if BCrypt::Password.new(user_info.hashed_password) == raw_password
           true
         else
-          error!(json:{
-                     errors:[
-                         {
-                             message: 'errors.messages.invalid_pin',
-                             code: ErrorCodes::INVALID_PIN
-                         }
-                     ]
-                 }, status: 400
-          )
+          error!(meta: {
+                   status: 400,
+                   errors: [
+                     message: ('errors.messages.invalid_pin'),
+                     code: ErrorCodes::INVALID_PIN
+                   ]
+                 }, response: {})
           false
         end
       end
 
       def user
         return @user if @user
-        return nil unless (token = AuthToken.find_by(token: params[:auth_token]))
-        update_auth_token token
-        @user = token.user
+        if (token = AuthToken.find_by(token: params[:auth_token]))
+          update_auth_token token
+          unless token.user.destroyed?
+            @user = token.user
+          else
+            error!(meta: {
+                     status: 400,
+                     errors: [
+                       message: ('errors.messages.invalid_auth_token'),
+                       code: ErrorCodes::INVALID_TOKEN
+                     ]
+                   }, response: {})
+          end
+        else
+          error!(meta: {
+                   status: 400,
+                   errors: [
+                     message: ('errors.messages.invalid_auth_token'),
+                     code: ErrorCodes::INVALID_TOKEN
+                   ]
+                 }, response: {})
+        end
       end
 
       def update_auth_token(token)
@@ -57,15 +73,13 @@ module API
 
       def authenticate_user!
         unless user_signed_in?
-          error!(json: {
+          error!(meta: {
+                   status: 400,
                    errors: [
-                     {
-                       message: t('errors.messages.invalid_auth_token'),
-                       code: ErrorCodes::INVALID_TOKEN
-                     }
+                     message: ('errors.messages.invalid_auth_token'),
+                     code: ErrorCodes::INVALID_TOKEN
                    ]
-                 }, status: 400
-                )
+                 }, response: {})
         end
       end
     end
